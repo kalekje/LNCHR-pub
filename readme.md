@@ -37,7 +37,7 @@ using my work or home computer. You can try to leverage this for an independent 
 
 Open my documents with `doc`
 
-![](demo\Doc.gif)
+![](.\demo\Doc.gif)
 
 Open MS Paint with `pai`
 
