@@ -14,6 +14,7 @@ All I ask in return for your use of this script is that you share any ideas that
 
 
 ## How-to
+* Run `LNCHR-Main.ahk`
 * Press `CapsLock` to activate.
 * Type in your command (no need to hit `Enter`)
 * Some commands put the GUI in 'query' mode, where you can enter additional text (`Enter` required), for example, to search Google or Spotify 
