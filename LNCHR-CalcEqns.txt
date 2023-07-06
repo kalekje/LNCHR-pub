@@ -1,0 +1,8 @@
+toPolarD(x) = [x.abs(), x.arg()*180/pi]
+toPolarR(x) = [x.abs(), x.arg()]
+mag(x,y) = sqrt(x^2+y^2)
+pf_pq(p,q) = p/sqrt(p^2+q^2)
+par(a,b) = a*b/(a+b)
+r3 = sqrt(3)
+r2 = sqrt(2)
+jpi = 1i*pi
