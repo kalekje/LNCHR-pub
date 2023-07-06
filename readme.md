@@ -37,11 +37,11 @@ using my work or home computer. You can try to leverage this for an independent 
 
 Open my documents with `doc`
 
-![](.\demo\Doc.gif)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Doc.gif)
 
 Open MS Paint with `pai`
 
-![](demo\Paint.gif)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Paint.gif)
 
 Enable calculator mode with `c␣`. Or press `↑` or `↓` to navigate through calculator history. 
 Hot tip: you can perform array math: `[1,2,3]^2`. You can store expressions like `phi = 1.618` and functions like `E(m) = m*(3e8)^2`
@@ -49,18 +49,18 @@ Type `?` and hit enter to open and edit your saved expressions, and `mem` to vie
 
 
 
-![](demo\Calc.gif)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Calc.gif)
 
 
 Search Outlook with `o␣`. Put an `!` in the query as a shortcut to `hasattachments:yes`.
 
-![](demo\Outlook.gif)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Outlook.gif)
 
 Compose an e-mail with `com`
 
-![](demo\Compose.gif)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Compose.gif)
 
 Manage your commands with the provided Excel file. Mapped to `a xl`
 
-![](demo\XL.png)
+![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/XL.png)
 
