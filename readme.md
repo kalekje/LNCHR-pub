@@ -61,7 +61,9 @@ Compose an e-mail with `com`
 
 ![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/Compose.gif)
 
-Manage your commands with the provided Excel file. Mapped to `a xl`
+Manage your commands with the provided Excel file. Mapped to `a xl`. Open this file, enable macros, and hit `ctrl+l` here
+to generate `LNCHR-Commands.ahk` There are different types of commands (column D) which make templating the code a lot easier.
+See the Help tab for more details.
 
 ![](https://github.com/kalekje/LNCHR-pub/blob/master/demo/XL.png)
 

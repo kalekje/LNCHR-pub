@@ -140,7 +140,7 @@ js_math_exp_helper(exp)
 
 run_calc_shortcut_then_return(s){
         tryrun(s)
-        lngui._edit.Value := ""
+        set_lngui_input()
         Sleep(200)
         WinActivate(lngui.Hwnd)
         return
@@ -158,9 +158,7 @@ Calculate(expr)
     if expr == '?' { ; load equations list
         run_calc_shortcut_then_return('LNCHR-CalcEqns.txt')
         return
-    } else if InStr(expr, '=') {
-        FileAppend expr "`n", "LNCHR-CalcEqns.txt" ; store equation in memory
-    } else if expr == "mem" {
+   } else if expr == "mem" {
         run_calc_shortcut_then_return("LNCHR-CalcMemory.txt")
         return
     }
@@ -169,12 +167,15 @@ Calculate(expr)
     result := TryEvalMathExpr(expr)
 
      if result != "undefined" {
-        A_Clipboard := result
-        FileAppend exprOG "`n", "LNCHR-CalcMemory.txt" ; store expression in memory
-
-      } else{
+          if InStr(expr, '=') {
+            FileAppend expr "`n", "LNCHR-CalcEqns.txt" ; store equation in memory
+          } else {
+            A_Clipboard := result
+            FileAppend exprOG "`n", "LNCHR-CalcMemory.txt" ; store expression in memory
+          }
+     } else {
         result := "..."
-      }
+     }
 
     set_calc_text(result)
 

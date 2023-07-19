@@ -1,4 +1,5 @@
 ﻿#Requires Autohotkey v2.0+
+#SingleInstance Force
 #WinActivateForce
 
 Suspend 1 ; suspend all hotkeys until loaded
@@ -11,26 +12,18 @@ TraySetIcon("rocketlnchr.ico")
 SetCapsLockState("AlwaysOff")
 
 toggleCapsLock(){
-    capsstate := GetKeyState("CapsLock", "T") ;(T indicates a Toggle. capsstate is an arbitrary varible name)
-    if capsstate == 0
-        SetCapsLockState("AlwaysOn")
-    else
-        SetCapsLockState("AlwaysOff")
-    return
+    SetCapsLockState !GetKeyState('CapsLock', 'T')
 }
 
 ; Allow normal CapsLock functionality to be toggled by Alt+CapsLock, or shift, or crl
 !CapsLock::
 ^CapsLock::
-+CapsLock::
-    {
-        toggleCapsLock()
-    }
++CapsLock::toggleCapsLock()
 
 
-UsingMainWorkComputer := A_ComputerName == "MH508793" ; Global flag for using main work computer, changes title
-UsingAnyWorkComputer := InStr(A_ComputerName, "MH") == 1 ; Global flag for using any work computer for select commands
 
+UsingMainWorkComputer := A_ComputerName == "xyz" ; Global flag for using main work computer, changes title
+UsingAnyWorkComputer := InStr(A_ComputerName, "xyz") == 1 ; Global flag for using any work computer for select commands
 
 
 ; ______________________________________________________________________________ Globals and Funcs ___________
@@ -45,7 +38,6 @@ reset_lngui_props(mainoff := "main") {  ; reset flags and choose what state you 
     lngui_props.qclose := True
     lngui_props.click_exit := False
     lngui_props.title := " 🚀 LNCHR"
-    lngui_props.input := ""
     lngui_props.calced := False ; has calculator been used before?
     lngui_props.calcmem := 0 ; calculator memory line
     lngui_props.acccolor := "FFB900" ; calculator memory line
@@ -95,7 +87,7 @@ build_lngui(){
     lngui.BackColor := "1d1f21"
 
     lngui._text := lngui.AddText(common_options " c" lngui_props.acccolor , lngui_props.title)
-    lngui._edit := lngui.AddEdit(common_options " Background1d1f21", "") ; the input box
+    lngui._edit := lngui.AddEdit(common_options " Background1d1f21", "") ; the main input box
     lngui._edit.OnEvent("Change", lngui_edit_chng)
     lngui._butt := lngui.AddButton("xp-0 yp-0 w0 h0 +default")  ; add a hidden button to allow enter to submit contents
     lngui._butt.OnEvent("Click", lngui_query_enter)  ; see function below
@@ -125,10 +117,18 @@ set_lngui_window(s){ ; I was messing around with rounded corners here, was not s
 }
 
 
+set_lngui_input(s:=""){
+    lngui._edit.Value := s
+}
+
+get_lngui_input() {
+    return lngui._edit.Value
+}
+
+
 lngui_edit_chng(GuiCtrlObj, Info) {
-    lngui_props.input := GuiCtrlObj.Value
     if is_lngui_state("main")
-        lngui_run_commands(lngui_props.input) ;
+        lngui_run_commands(get_lngui_input()) ;
     return
 }
 
@@ -247,7 +247,7 @@ lngui_enable_query(query_title, qfunc) {
     lngui_props.click_exit := False
     set_lngui_state("query")
     lngui._text.Value := lngui_props.title "  🠖  " query_title
-    lngui._edit.Value := ""
+    set_lngui_input()
     set_lngui_window("query")
     lngui_props.qfunc := [qfunc] ; for some reason, this must be stored in an array, maybe to make new obj?
 }
@@ -261,7 +261,7 @@ reset_lngui_query(){
 
 lngui_query_enter(*) { ; gui_call_sub_funcs
     if is_lngui_state("query")
-        lngui_props.qfunc[1](lngui_props.input)
+        lngui_props.qfunc[1](get_lngui_input())
     if lngui_props.qclose ; by default, close after query
         close_lngui()
 }
@@ -302,8 +302,8 @@ lngui_arr_press(ud) {
     lngui_enable_calc()
     lngui_props.calcmem += ud
     lngui._edit.Value := ""
-    lngui._edit.Value := GetCalcMem("LNCHR-CalcMemory.txt", lngui_props.calcmem)
-    lngui_props.input := lngui._edit.Value
+    set_lngui_input()
+    set_lngui_input(GetCalcMem("LNCHR-CalcMemory.txt", lngui_props.calcmem))
     SendMessage(0xB1, 69, 69,, lngui._edit.Hwnd) ; EM_SETSEL ; set cursor to end
     lngui.Show("autosize")
 
