@@ -92,8 +92,11 @@ class JsRT
             , "ptr*", &result:=0)
         if e
         {
-            if DllCall(this._dll "\JsGetAndClearException", "ptr*", &excp:=0) = 0
+            if DllCall(this._dll "\JsGetAndClearException", "ptr*", &excp:=0) = 0 {
+                ToolTip("Error with JS code:" code)
+                SetTimer(() => ToolTip(), -7000)
                 throw this._JsToVt(excp)
+               }
             throw Error("JsRT error", -2, format("0x{:X}", e))
         }
         return result

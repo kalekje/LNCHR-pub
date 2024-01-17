@@ -1,15 +1,20 @@
 #Requires AutoHotkey v2.0+
-#Include QuickTips.ahk
+
+; these are functions that are called by some of the Commands.
+
+
 
 ; ______________________________________________________________________________ TryRun ___________
 
 
 TryRun(s) {
     try {
-            run s
+         run s
             }
     catch {
         QuickTrayTip("failed to run:`n" s, tit:="LNCHR")
+        ToolTip("failed to run:`n" s, 500, 0)
+        SetTimer(() => ToolTip(), -3000)
         }
 }
 
@@ -78,6 +83,24 @@ return func
 
 
 
+; https://www.autohotkey.com/boards/viewtopic.php?t=23352
+; todo must fix this to get active explorer path in last window open...
+GetActiveExplorerPath()
+    {
+    explorerHwnd := WinActive("ahk_class CabinetWClass")
+    if (explorerHwnd)
+    {
+    for window in ComObject("Shell.Application").Windows
+    {
+    if (window.hwnd==explorerHwnd)
+    {
+    return window.Document.Folder.Self.Path
+    }
+    }
+    }
+}
+
+
 
 
 
@@ -117,9 +140,9 @@ JS.Eval(FileRead("mathjs.js"))  ; add math js
 
 JS.Eval("const parser = math.parser()") ; create a parser object in JS
 
-Loop Read, 'LNCHR-CalcEqns.txt' { ; load equations
-    JS.Eval("parser.evaluate('" A_LoopReadLine "')")
-}
+Loop Read, lngui_props.calceqfile { ; load equations
+     JS.Eval("parser.evaluate('" A_LoopReadLine "')")
+ }
 
 
 MakeMathExpr(expr) => "math.format(parser.evaluate('" expr "'), {precision: 5}).toString()"
@@ -147,7 +170,6 @@ run_calc_shortcut_then_return(s){
 }
 
 
-lngui_calctext := Map() ; dummy declaration
 
 Calculate(expr)
 {
@@ -156,10 +178,10 @@ Calculate(expr)
     expr := js_math_exp_helper(expr)  ;
 
     if expr == '?' { ; load equations list
-        run_calc_shortcut_then_return('LNCHR-CalcEqns.txt')
+        run_calc_shortcut_then_return(lngui_props.calceqfile)
         return
    } else if expr == "mem" {
-        run_calc_shortcut_then_return("LNCHR-CalcMemory.txt")
+        run_calc_shortcut_then_return(lngui_props.memfile)
         return
     }
 
@@ -168,10 +190,10 @@ Calculate(expr)
 
      if result != "undefined" {
           if InStr(expr, '=') {
-            FileAppend expr "`n", "LNCHR-CalcEqns.txt" ; store equation in memory
+            FileAppend expr "`n", lngui_props.calceqfile ; store equation in memory
           } else {
             A_Clipboard := result
-            FileAppend exprOG "`n", "LNCHR-CalcMemory.txt" ; store expression in memory
+            IniWrite(exprOG, lngui_props.memfile, "Calculate")
           }
      } else {
         result := "..."
