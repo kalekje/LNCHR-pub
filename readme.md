@@ -1,11 +1,11 @@
 # 🚀 LNCHR
 
 Heavily inspired by [TheBestPessimist's AutoHotKey-Launcher](https://github.com/TheBestPessimist/AutoHotKey-Launcher/blob/master/README.md)
-and [PowerToys Run](https://learn.microsoft.com/en-us/windows/powertoys/run); this my version of a quick launcher. compatible with AHK v2.
+and [PowerToys Run](https://learn.microsoft.com/en-us/windows/powertoys/run); this is my version of a quick launcher, compatible with AHK v2.
 
 ## The gist
-Re-maps `CapsLock` to open a GUI with a single textbox that runs shortcuts mapped to text that you type in. A semantic way of activating shortcuts (who has the time to remember a million`CTRL+WIN+XYZs`? I'd rather spend that time coding!), opening files or folders, or searching the net. 
-You have the power to map shortcuts as desired, for example: set `pai` to MS Paint, `scr` to run an arbitrary script, or `con` to press `WIN+K` 'cause you can't remember the key-press.
+Re-map `CapsLock` to open a GUI with a single textbox that runs shortcuts mapped to text that you type in. A semantic way of activating shortcuts, opening files or folders, or searching the net (who has the time to remember a million`CTRL+WIN+XYZs`? I'd rather spend that time coding!). 
+You have the power to create shortcuts as desired, for example: set `pai` to MS Paint, `scr` to run an arbitrary script, or `con` to press `WIN+K` 'cause you can't remember the key-press.
 
 
 ## For your consideration
