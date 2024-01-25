@@ -1,5 +1,4 @@
 #Requires Autohotkey v2.0+
-#NoTrayIcon
 #SingleInstance Force
 
 
