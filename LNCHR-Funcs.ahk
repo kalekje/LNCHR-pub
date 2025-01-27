@@ -193,7 +193,8 @@ Calculate(expr)
             FileAppend expr "`n", lngui_props.calceqfile ; store equation in memory
           } else {
             A_Clipboard := result
-            IniWrite(exprOG, lngui_props.memfile, "Calculate")
+            lngui_update_qmem()
+            lngui_reload_qmem() ; reload memory so multiple entries in one session are remembered
           }
      } else {
         result := "..."

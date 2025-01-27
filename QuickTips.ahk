@@ -5,7 +5,7 @@
 
 ToolTipOptions.Init()
 ToolTipOptions.SetFont("s12", "Consolas")
-ToolTipOptions.SetColors("black", "white")
+ToolTipOptions.SetColors("darkgray", "silver")
 ToolTipOptions.SetMargins(6,6,6,6)
 
 
@@ -25,7 +25,7 @@ QuickToolTip(msg:="", t:=2) {
 
 
 
-
+; NOTE: DARKGRAY color added to BG
 ; Credit: https://www.autohotkey.com/boards/viewtopic.php?f=83&t=113308
 ; ======================================================================================================================
 ; ToolTipOptions        -  additional options for ToolTips
@@ -109,7 +109,7 @@ Class ToolTipOptions {
          Static HTML := {AQUA:   0xFFFF00, BLACK: 0x000000, BLUE:   0xFF0000, FUCHSIA: 0xFF00FF, GRAY:  0x808080,
                          GREEN:  0x008000, LIME:  0x00FF00, MAROON: 0x000080, NAVY:    0x800000, OLIVE: 0x008080,
                          PURPLE: 0x800080, RED:   0x0000FF, SILVER: 0xC0C0C0, TEAL:    0x808000, WHITE: 0xFFFFFF,
-                         YELLOW: 0x00FFFF}
+                         YELLOW: 0x00FFFF, DARKGRAY: 0x222222}
          If IsInteger(Color)
             Return ((Color >> 16) & 0xFF) | (Color & 0x00FF00) | ((Color & 0xFF) << 16)
          Return HTML.HasProp(Color) ? HTML.%Color% : Default

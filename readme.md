@@ -1,6 +1,6 @@
 # 🚀 LNCHR
 
-Heavily inspired by [TheBestPessimist's AutoHotKey-Launcher](https://github.com/TheBestPessimist/AutoHotKey-Launcher/blob/master/README.md)
+Heavily inspired by [plul's AutoHotKey Launcher](https://github.com/plul/Public-AutoHotKey-Scripts)
 and [PowerToys Run](https://learn.microsoft.com/en-us/windows/powertoys/run); this is my version of a quick launcher, compatible with AHK v2.
 
 ## The gist
@@ -31,11 +31,11 @@ All I ask in return for your use of this script is that you share any ideas that
 * If you want to delete the memory for a query type, go to that query, type and submit `clr`
 
 ## Some features
-* Built-in Calculator that uses [mathjs](https://mathjs.org/docs/expressions/parsing.html), with memory and programmable functions
+* Built-in Calculator that uses [mathjs](https://mathjs.org/docs/expressions/parsing.html), with memory and programmable functions (stored in `LNCHR-CalcEqns.txt`)
 * Quickly run commands with simple text replacements (eg. Google Search, Everything Search)
 * Outlook search
 * `LNCHR-CommandsGeneator.xlsm`: a Microsoft Excel macro-enabled spreadsheet that is used to generate the `LNCHR-Commands.ahk`  file an  a `HELP-Commands.txt` file for  quick-help and tooltip suggestions. If you will not be using this tool, I recommend setting
-  `lngui_props.show_commands_tips := False` in `LNCHR-Main.ahk` (line 34). See the Help tab on the Excel file for guidance.
+  `lngui_props.show_commands_tips := False` in `LNCHR-Main.ahk`. See the Help tab on the Excel file for guidance.
 * Note: the briefcase icon is there because I have a flag that signals if I am
 using my work or home computer. You can try to leverage this for an independent instance on a remote desktop, for example, or make computer-specific commands.
 

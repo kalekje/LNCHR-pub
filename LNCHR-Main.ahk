@@ -5,7 +5,8 @@
 Suspend 1 ; suspend all hotkeys until loaded
 
 global lngui_props := object() ; stored in an object to allow for easier access in functons (objects are global)
-lngui_props.calceqfile := "LNCHR-CalcEqns.txt" ; used ib Funcs
+lngui_props.calceqfile := "LNCHR-CalcEqns.txt" ; used in Funcs, list of equations to load up
+
 
 #Include LNCHR-Commands.ahk
 #Include LNCHR-Funcs.ahk
@@ -17,8 +18,9 @@ TraySetIcon("rocketlnchr.ico")
 SetCapsLockState("AlwaysOff")
 
 toggleCapsLock(){
+    if ! is_lngui_on() {
     SetCapsLockState !GetKeyState('CapsLock', 'T')
-}
+}}
 
 ; Allow normal CapsLock functionality to be toggled by Alt+CapsLock, or shift, or crl
 !CapsLock::
@@ -27,8 +29,12 @@ toggleCapsLock(){
 
 
 ; Some flags for commands
-UsingMainWorkComputer := A_ComputerName == "A SPECIFIC COMPUTER NAME" ; Global flag for using main work computer, changes title
-UsingAnyWorkComputer := InStr(A_ComputerName, "MAYBE YOUR WORK COMPUTER PREFIXES") == 1 ; Global flag for using any work computer for select commands
+UsingWorkComputer := A_ComputerName == "computer name if you want" ; Global flag for using main work computer, changes title
+; and toggle can be used for enabling specific commands
+
+;#Include ../LNCHR-Private/LNCHR-Load-Private.ahk ; some private functions, I set my computer name here and load custom functions I can't share
+
+
 
 ; some settings
 lngui_props.show_commands_tips := True
@@ -41,7 +47,7 @@ lngui_props.query_autocomplete := True
 
 
 lngui_props.title := " 🚀 LNCHR" ; restore the title
-if UsingMainWorkComputer
+if UsingWorkComputer
     lngui_props.title  := lngui_props.title " 💼"
 
 
@@ -85,6 +91,8 @@ set_lngui_state(state) {  ; set state of lngui
 
 build_lngui(){
     global lngui
+
+    SetCapsLockState false
 
     lngui := Gui()
     
@@ -232,7 +240,7 @@ caps_presses_timer() { ; reset cap timer to 0
 #HotIf
 
 
-; ______________________________________________________________________________ hotkeys while gui is opem ___________
+; ______________________________________________________________________________ hotkeys while gui is open ___________
 
 
 #HotIf is_lngui_on()  ; hotkeys for when gui is on
@@ -275,22 +283,37 @@ lngui_enable_query(query_title, qfunc) {
     lngui_props.memcat := query_title
     lngui_props.memarr := []
     lngui_props.memstr := ""
-    if InStr(IniRead(lngui_props.memfile),  query_title) {
-        lngui_props.memstr := IniRead(lngui_props.memfile, query_title) "`n"
-        lngui_props.memarr := StrSplit(lngui_props.memstr, "`n")
-    }
+    lngui_reload_qmem()
+}
 
+
+lngui_reload_qmem() {
+    if InStr(IniRead(lngui_props.memfile),  lngui_props.memcat) {
+        lngui_props.memstr := IniRead(lngui_props.memfile, lngui_props.memcat) "`n"
+        lngui_props.memarr := StrSplit(lngui_props.memstr, "`n")
+    } else {
+        lngui_props.memarr := []
+        lngui_props.memstr := ""
+    }
+}
+
+
+
+lngui_update_qmem() {
+    mem := get_lngui_input() . "`n" . StrReplace(lngui_props.memstr, get_lngui_input() . "`n", "") ; remove existing entries from memory and add current entry
+    IniDelete(lngui_props.memfile, lngui_props.memcat) ; delete section to re-add it with
+    IniWrite(mem, lngui_props.memfile, lngui_props.memcat)
 }
 
 
 lngui_query_enter(*) { ; gui_call_sub_funcs
     if is_lngui_state("query") {
-        if get_lngui_input() == "clr" { ; type clear to delete memory
+        if get_lngui_input() == "clrmem" { ; type clear to delete memory
             IniDelete(lngui_props.memfile, lngui_props.memcat)
         } else {
             lngui_props.qfunc[1](get_lngui_input())
-            if lngui_props.memcat != "Calculate" {
-                IniWrite(get_lngui_input(), lngui_props.memfile, lngui_props.memcat)
+            if lngui_props.memcat != "Calculate" { ; note different function updates calculator memory only if expression is valid
+                lngui_update_qmem()
             }
         }
     }
@@ -339,9 +362,9 @@ lngui_get_query_mem(cat, ind) { ; retrieve memory based on index
     if lngui_props.memarr.Length == 0 {
         return ""
     }
-
     if ind < 1 {
         ind := 1
+        lngui_reload_qmem()
     }
     if ind > lngui_props.memarr.Length {
         ind := lngui_props.memarr.Length
@@ -356,7 +379,7 @@ lngui_autocomplete() {
   if ((GetKeyState("Delete", "P")) || (GetKeyState("Backspace", "P")))
       return ; dont autocomplete on delete or backspace
   input := get_lngui_input()  ; stash current input
-  res := filter_lines(input, lngui_props.memstr, True) ;
+  res := filter_lines(input, lngui_props.memstr, True, lngui_props.memcat != "Calculate") ; get autocomplete result, do case insensitive unless calculator
   if res == "" or input == res or StrLen(input) > StrLen(res)
     return ; don't autocomplete if exact match or no match
   currCaret := SendMessage(0xB0,0,0,lngui._edit.hwnd) & 0xFFFF ; stash caret pos
@@ -381,10 +404,26 @@ move_caret(s:=-1, e:=s) { ; move caret from start to end, -1 means end of input
 
 
 
+RegExReplaceInsensitive() {
+; todo make a function for case insensitive regex relacement, but return the correct case
+; this would be useful for allowing proper recall of case for query memory but be case-insensitive for matching
+}
+
+;replace_text_file(file, find, replace) {
+;    text := FileRead(file)
+;    text := StrReplace(text, find, replace)
+;    FileDelete(file)
+;    FileAppend(text, file)
+;}
 
 
-filter_lines(q, s, one:=False) {  ; used to filter lines from a string "s", each line starting with "q"
-    if q == ""
+filter_lines(q, s, one:=False, insens:=False) {  ; used to filter lines from a string "s", each line starting with "q"
+    if insens {
+        q := StrLower(q)
+        s := StrLower(s)
+    }
+    ; one returns a single match, insens does a case insensitive match
+    if q == "" or InStr(q, "\") ; \ causes error with Regex, so skip
         return ""
      prepend := ""
      loop Parse q { ; iterate through characters

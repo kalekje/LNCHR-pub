@@ -1,5 +1,8 @@
 #Requires Autohotkey v2.0+
 #SingleInstance
+
+TraySetIcon "W.ico"
+
 Persistent()
 
 SetTimer(MoveIt, 100000)
